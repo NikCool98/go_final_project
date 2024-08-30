@@ -2,16 +2,14 @@ package main
 
 import (
 	"database/sql"
+	"github.com/NikCool98/go_final_project/config"
+	"github.com/NikCool98/go_final_project/handlers"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 
 	_ "modernc.org/sqlite"
-)
-
-const (
-	port = "7540"
 )
 
 var DB *sql.DB
@@ -54,12 +52,12 @@ func main() {
 		log.Println("БД была создана ранее")
 	}
 
-	webDir := "./web"
-	fileSrv := http.FileServer(http.Dir(webDir))
+	fileSrv := http.FileServer(http.Dir(config.WebDir))
 	http.Handle("/", fileSrv)
+	http.HandleFunc("/api/nextdate", handlers.NextDateHandler)
 
-	log.Printf("Starting server on port: %s", port)
-	err = http.ListenAndServe(":"+port, nil)
+	log.Printf("Starting server on port: %s", config.DefaultPort)
+	err = http.ListenAndServe(":"+config.DefaultPort, nil)
 	if err != nil {
 		log.Fatalf("Server run error: %v", err)
 	}
