@@ -19,6 +19,11 @@ func main() {
 	http.Handle("/", fileSrv)
 	http.HandleFunc("/api/nextdate", handlers.NextDateHandler)
 	http.HandleFunc("POST /api/task", handlers.TaskPostHandler(store))
+	http.HandleFunc("/api/tasks", handlers.TasksGetHandler(store))
+	http.HandleFunc("GET /api/task", handlers.TaskGetHandler(store))
+	http.HandleFunc("PUT /api/task", handlers.TaskPutHandler(store))
+	http.HandleFunc("DELETE /api/task", handlers.TaskDelHandler(store))
+	http.HandleFunc("/api/task/done", handlers.TaskDoneHandler(store))
 
 	log.Printf("Starting server on port: %s", config.DefaultPort)
 	err := http.ListenAndServe(":"+config.DefaultPort, nil)

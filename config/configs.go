@@ -4,6 +4,7 @@ const (
 	DefaultPort = "7540"
 	WebDir      = "./web"
 	DateFormat  = "20060102"
+	MaxTasks    = 50
 )
 
 type Task struct {
