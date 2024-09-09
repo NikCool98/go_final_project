@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	// Проверка наличия БД
+	// Запуск БД
 	dataBase := stor.OpenDb()
 	defer dataBase.Close()
 	store := stor.NewStore(dataBase)

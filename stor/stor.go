@@ -65,7 +65,7 @@ func (s *Stor) CreateTask(t config.Task) (string, error) {
 		return "", fmt.Errorf(`{"error":"Не указан заголовок задачи"}`)
 	}
 
-	// Проверяем наличие даты
+	// Проверка на дату
 	if t.Date == "" {
 		t.Date = time.Now().Format(config.DateFormat)
 	}
@@ -74,7 +74,7 @@ func (s *Stor) CreateTask(t config.Task) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf(`{"error":"Некорректный формат даты"}`)
 	}
-	// Если дата меньше сегодняшней, устанавливаем следующую дату по правилу
+	// Если дата меньше сегодняшней, устанавливаем следующую дату
 	if t.Date < time.Now().Format(config.DateFormat) {
 		if t.Repeat != "" {
 			nextDate, err := taskrepeater.NextDate(time.Now(), t.Date, t.Repeat)
@@ -94,7 +94,7 @@ func (s *Stor) CreateTask(t config.Task) (string, error) {
 		return "", fmt.Errorf(`{"error":"Не удалось добавить задачу"}`)
 	}
 
-	// Возвращаем идентификатор добавленной задачи
+	// Возвращаем шв добавленной задачи
 	id, err := result.LastInsertId()
 	if err != nil {
 		return "", fmt.Errorf(`{"error":"Не удалось вернуть id новой задачи"}`)
@@ -149,11 +149,11 @@ func (s *Stor) GetTask(id string) (config.Task, error) {
 }
 
 func (s *Stor) UpdateTask(t config.Task) error {
-	// Проверяем, что id в теле не пустой
+	// Проверка на пустой id
 	if t.ID == "" {
 		return fmt.Errorf(`{"error":"Не указан id"}`)
 	}
-	// Проверяем обязательное поле Title
+	// Проверка на Title
 	if t.Title == "" {
 		return fmt.Errorf(`{"error":"Не указан заголовок задачи"}`)
 	}
@@ -167,7 +167,7 @@ func (s *Stor) UpdateTask(t config.Task) error {
 		return fmt.Errorf(`{"error":"Некорректный формат даты"}`)
 	}
 
-	// Если дата меньше сегодняшней, устанавливаем следующую дату по правилу
+	// Если дата меньше сегодняшней, устанавливаем следующую дату
 	if t.Date < time.Now().Format(config.DateFormat) {
 		if t.Repeat != "" {
 			nextDate, err := taskrepeater.NextDate(time.Now(), t.Date, t.Repeat)
