@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/NikCool98/go_final_project/config"
 	"github.com/NikCool98/go_final_project/handlers"
 	"github.com/NikCool98/go_final_project/stor"
-	"log"
 	_ "modernc.org/sqlite"
-	"net/http"
 )
 
 func main() {

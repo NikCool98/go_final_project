@@ -3,12 +3,13 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
+
 	"github.com/NikCool98/go_final_project/config"
 	"github.com/NikCool98/go_final_project/stor"
-	"net/http"
 )
 
-func TaskGetHandler(store stor.Stor) http.HandlerFunc {
+func TaskGetHandler(store stor.Storage) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		//var t configs.Task
 		id := req.URL.Query().Get("id")

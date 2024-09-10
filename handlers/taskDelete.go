@@ -2,22 +2,21 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
+	"net/http"
+
 	"github.com/NikCool98/go_final_project/config"
 	"github.com/NikCool98/go_final_project/stor"
-	"net/http"
 )
 
-func TaskPutHandler(store stor.Stor) http.HandlerFunc {
+func TaskDelHandler(store stor.Storage) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
-		var t config.Task
-		err := json.NewDecoder(req.Body).Decode(&t)
+		id := req.URL.Query().Get("id")
+		err := store.DeleteTask(id)
 		if err != nil {
-			http.Error(res, `{"error":"Ошибка десериализации JSON"}`, http.StatusBadRequest)
-			return
-		}
-		err = store.UpdateTask(t)
-		if err != nil {
-			http.Error(res, err.Error(), http.StatusBadRequest)
+			err := errors.New("Задача с таким id не найдена")
+			config.ErrorResponse.Error = err.Error()
+			json.NewEncoder(res).Encode(config.ErrorResponse)
 			return
 		}
 		res.Header().Set("Content-Type", "application/json")

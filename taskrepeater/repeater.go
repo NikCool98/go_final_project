@@ -2,10 +2,11 @@ package taskrepeater
 
 import (
 	"fmt"
-	"github.com/NikCool98/go_final_project/config"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/NikCool98/go_final_project/config"
 )
 
 func NextDate(now time.Time, date string, repeat string) (string, error) {

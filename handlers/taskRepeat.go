@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	"github.com/NikCool98/go_final_project/config"
-	"github.com/NikCool98/go_final_project/taskrepeater"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/NikCool98/go_final_project/config"
+	"github.com/NikCool98/go_final_project/taskrepeater"
 )
 
 func NextDateHandler(res http.ResponseWriter, req *http.Request) {
@@ -28,7 +29,7 @@ func NextDateHandler(res http.ResponseWriter, req *http.Request) {
 	// Возвращаем ответ
 	_, err = res.Write([]byte(nextDate))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 

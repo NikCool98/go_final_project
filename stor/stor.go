@@ -3,15 +3,16 @@ package stor
 import (
 	"database/sql"
 	"fmt"
-	"github.com/NikCool98/go_final_project/config"
-	"github.com/NikCool98/go_final_project/taskrepeater"
 	"log"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/NikCool98/go_final_project/config"
+	"github.com/NikCool98/go_final_project/taskrepeater"
 )
 
-type Stor struct {
+type Storage struct {
 	db *sql.DB
 }
 
@@ -53,12 +54,12 @@ func OpenDb() *sql.DB {
 	}
 	return DB
 }
-func NewStore(db *sql.DB) Stor {
-	return Stor{db: db}
+func NewStore(db *sql.DB) Storage {
+	return Storage{db: db}
 }
 
 // Добавление задачи
-func (s *Stor) CreateTask(t config.Task) (string, error) {
+func (s *Storage) CreateTask(t config.Task) (string, error) {
 	var err error
 
 	if t.Title == "" {
@@ -102,7 +103,7 @@ func (s *Stor) CreateTask(t config.Task) (string, error) {
 	return fmt.Sprintf("%d", id), nil
 }
 
-func (s *Stor) GetTasks(search string) ([]config.Task, error) {
+func (s *Storage) GetTasks(search string) ([]config.Task, error) {
 	var t config.Task
 	var tasks []config.Task
 	var rows *sql.Rows
@@ -122,12 +123,13 @@ func (s *Stor) GetTasks(search string) ([]config.Task, error) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err := rows.Scan(&t.ID, &t.Date, &t.Title, &t.Comment, &t.Repeat)
-		if err = rows.Err(); err != nil {
-			return []config.Task{}, fmt.Errorf(`{"error":"Ошибка распознавания данных"}`)
-		}
+		err = rows.Scan(&t.ID, &t.Date, &t.Title, &t.Comment, &t.Repeat)
 		tasks = append(tasks, t)
 	}
+	if err = rows.Err(); err != nil {
+		return []config.Task{}, fmt.Errorf(`{"error":"Ошибка распознавания данных"}`)
+	}
+
 	if len(tasks) == 0 {
 		tasks = []config.Task{}
 	}
@@ -135,7 +137,7 @@ func (s *Stor) GetTasks(search string) ([]config.Task, error) {
 	return tasks, nil
 }
 
-func (s *Stor) GetTask(id string) (config.Task, error) {
+func (s *Storage) GetTask(id string) (config.Task, error) {
 	var t config.Task
 	if id == "" {
 		return config.Task{}, fmt.Errorf(`{"error":"Не указан id"}`)
@@ -148,7 +150,7 @@ func (s *Stor) GetTask(id string) (config.Task, error) {
 	return t, nil
 }
 
-func (s *Stor) UpdateTask(t config.Task) error {
+func (s *Storage) UpdateTask(t config.Task) error {
 	// Проверка на пустой id
 	if t.ID == "" {
 		return fmt.Errorf(`{"error":"Не указан id"}`)
@@ -201,7 +203,7 @@ func (s *Stor) UpdateTask(t config.Task) error {
 	return nil
 }
 
-func (s *Stor) DeleteTask(id string) error {
+func (s *Storage) DeleteTask(id string) error {
 	// Проерка на пустой id
 	if id == "" {
 		return fmt.Errorf(`{"error":"Не указан id"}`)
@@ -225,7 +227,7 @@ func (s *Stor) DeleteTask(id string) error {
 	return nil
 }
 
-func (s *Stor) TaskDone(id string) error {
+func (s *Storage) TaskDone(id string) error {
 	var t config.Task
 
 	t, err := s.GetTask(id)

@@ -3,12 +3,13 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
+
 	"github.com/NikCool98/go_final_project/config"
 	"github.com/NikCool98/go_final_project/stor"
-	"net/http"
 )
 
-func TasksGetHandler(store stor.Stor) http.HandlerFunc {
+func TasksGetHandler(store stor.Storage) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		searchParams := req.URL.Query().Get("search")
 		tasks, err := store.GetTasks(searchParams)

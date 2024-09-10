@@ -2,11 +2,12 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/NikCool98/go_final_project/stor"
 	"net/http"
+
+	"github.com/NikCool98/go_final_project/stor"
 )
 
-func TaskDoneHandler(store stor.Stor) http.HandlerFunc {
+func TaskDoneHandler(store stor.Storage) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		id := req.URL.Query().Get("id")
 		err := store.TaskDone(id)
