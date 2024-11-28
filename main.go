@@ -3,17 +3,31 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/NikCool98/go_final_project/config"
+	"github.com/NikCool98/go_final_project/handlers"
+	"github.com/NikCool98/go_final_project/stor"
+	_ "modernc.org/sqlite"
 )
 
-const port = "7540"
-
 func main() {
-	webDir := "./web"
-	fileSrv := http.FileServer(http.Dir(webDir))
-	http.Handle("/", fileSrv)
+	// Запуск БД
+	dataBase := stor.OpenDb()
+	defer dataBase.Close()
+	store := stor.NewStore(dataBase)
 
-	log.Printf("Starting server on port: %s", port)
-	err := http.ListenAndServe(":"+port, nil)
+	fileSrv := http.FileServer(http.Dir(config.WebDir))
+	http.Handle("/", fileSrv)
+	http.HandleFunc("/api/nextdate", handlers.NextDateHandler)
+	http.HandleFunc("POST /api/task", handlers.TaskPostHandler(store))
+	http.HandleFunc("/api/tasks", handlers.TasksGetHandler(store))
+	http.HandleFunc("GET /api/task", handlers.TaskGetHandler(store))
+	http.HandleFunc("PUT /api/task", handlers.TaskPutHandler(store))
+	http.HandleFunc("DELETE /api/task", handlers.TaskDelHandler(store))
+	http.HandleFunc("/api/task/done", handlers.TaskDoneHandler(store))
+
+	log.Printf("Starting server on port: %s", config.DefaultPort)
+	err := http.ListenAndServe(":"+config.DefaultPort, nil)
 	if err != nil {
 		log.Fatalf("Server run error: %v", err)
 	}
